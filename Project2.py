@@ -15,28 +15,28 @@ def get_titles_from_search_results(filename):
     [('Book title 1', 'Author 1'), ('Book title 2', 'Author 2')...]
     """
 
-    #pass
-    source_dir = os.path.dirname(filename)
-    fullPath = os.path.join(source_dir, filename)
-    file = open(fullPath, 'r', encoding = 'utf-8')
-    url = f.read
-    # r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'html.parser')
-    tags = soup.find_all('a', class_ = 'bookTitle')
+    f = open(filename, 'r')
+    fileData = f.read()
+    f.close()
+    
+    soup = BeautifulSoup(fileData, 'lxml')
+    bookTitles = soup.find_all('a', class_='bookTitle')
+    #print(bookTitles)
+    #print(len(bookTitles))
     bookInfo = []
-    # bigger = soup.find_all('a', class_ = 'bookTitle')
-    anchor = soup.find_all('span', itemprop = 'name')
-    anchor2 = anchor.find_all('span', itemprop = 'author')[0]
-    # anch = anchor.text
-    # anch2 = anchor2.text
-    # L.append(anch, anch2)
-    # print(L) 
-    # return(L)
-    for i in anchor: 
-        i = i.text 
-        L.append(i)
-    print(L)
-
+    for tag in bookTitles:
+        bookInfo.append(tag.text.strip())
+    authorsList = []
+    authorTags = soup.find_all('div', class_='authorName__container')
+    for item in authorTags: 
+        authorsList.append(item.text.strip())
+    #print(len(authorsList))
+    information = [] 
+    for i in range(len(bookTitles)): 
+        tup = bookInfo[i], authorsList[i]
+        information.append(tup)
+    #print(information)
+    return information
 
 
 
@@ -122,22 +122,29 @@ def extra_credit(filepath):
 
 class TestCases(unittest.TestCase):
 
-    # call get_search_links() and save it to a static variable: search_urls
+    # call get_search_links() and save it to a static variable: search_urls ****** 
+    #REMEMBER TO DO THIS !!!!!!
 
 
     def test_get_titles_from_search_results(self):
         # call get_titles_from_search_results() on search_results.htm and save to a local variable
+        searchUrls = get_titles_from_search_results("search_results.htm")
 
         # check that the number of titles extracted is correct (20 titles)
+        self.assertEqual(len(searchUrls),20)
 
         # check that the variable you saved after calling the function is a list
+        self.assertIsInstance(searchUrls, list)
 
         # check that each item in the list is a tuple
+        for i in searchUrls: 
+            self.assertEqual(type(i), tuple)
 
         # check that the first book and author tuple is correct (open search_results.htm and find it)
+        self.assertEqual(searchUrls[0], ("Harry Potter and the Deathly Hallows (Harry Potter, #7)", "J.K. Rowling"))
 
         # check that the last title is correct (open search_results.htm and find it)
-        pass
+        #pass
 
     def test_get_search_links(self):
         # check that TestCases.search_urls is a list
