@@ -53,8 +53,19 @@ def get_search_links():
     “https://www.goodreads.com/book/show/kdkd".
 
     """
+    bookUrls = [] 
+    url = 'https://www.goodreads.com/search?q=fantasy&qid=NwUsLiA2Nc'
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    titles = soup.find_all('a', class_ = 'bookTitle')
+    for item in titles: 
+        links = item['href']
+        #print(links)
+        if links.startswith('/book/show'):
+            bookUrls.append("https://www.goodreads.com/book/show/" + links)
+    return bookUrls[:10]
 
-    pass
+    #pass
 
 
 def get_book_summary(book_url):
@@ -71,7 +82,30 @@ def get_book_summary(book_url):
     Make sure to strip() any newlines from the book title and number of pages.
     """
 
-    pass
+    bookInfo = [] 
+    r = requests.get(book_url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    bookTitles = []
+    titles = soup.find('h1', class_= 'gr-h1 gr-hh1--serif')
+    for item in titles: 
+        bookTitles.append(item.text.strip())
+    authorList = []
+    authors = soup.find('a', class_ = 'authorName').text
+    for i in authors: 
+        authorList.append(i)
+    pageCount = [] 
+    numPages = soup.find('span', itemprop = "numberOfPages")
+    for x in numPages: 
+        pageCount.append(x.text.strip())
+    for z in bookTitles: 
+        tup = (bookTitles[z], authorList[z], pageCount[z])
+        bookInfo.append(tup)
+    return bookInfo
+
+
+
+
+    #pass
 
 
 def summarize_best_books(filepath):
@@ -124,6 +158,7 @@ class TestCases(unittest.TestCase):
 
     # call get_search_links() and save it to a static variable: search_urls ****** 
     #REMEMBER TO DO THIS !!!!!!
+    search_urls = get_search_links()
 
 
     def test_get_titles_from_search_results(self):
@@ -144,35 +179,52 @@ class TestCases(unittest.TestCase):
         self.assertEqual(searchUrls[0], ("Harry Potter and the Deathly Hallows (Harry Potter, #7)", "J.K. Rowling"))
 
         # check that the last title is correct (open search_results.htm and find it)
+        self.assertEqual(searchUrls[-1][0], "Harry Potter: The Prequel (Harry Potter, #0.5)")
+
         #pass
 
     def test_get_search_links(self):
         # check that TestCases.search_urls is a list
+        self.assertIsInstance(TestCases.search_urls, list)
 
         # check that the length of TestCases.search_urls is correct (10 URLs)
+        self.assertEqual(len(TestCases.search_urls), 10)
 
 
         # check that each URL in the TestCases.search_urls is a string
         # check that each URL contains the correct url for Goodreads.com followed by /book/show/
-        pass
+        for item in TestCases.search_urls:
+            self.assertIsInstance(item, str)
+            self.assertTrue("https://www.goodreads.com/book/show/" in item)
+        #pass
 
 
     def test_get_book_summary(self):
         # create a local variable – summaries – a list containing the results from get_book_summary()
         # for each URL in TestCases.search_urls (should be a list of tuples)
+        summaries = [] 
+        for i in TestCases.search_urls: 
+            summaries.append(get_book_summary(i))
 
+        self.assertEqual(len(summaries), 10)
         # check that the number of book summaries is correct (10)
-
+        for i in summaries: 
+            
             # check that each item in the list is a tuple
+            self.assertIsInstance(i, tuple)
 
             # check that each tuple has 3 elements
+            self.assertEqual(len(i), 3)
 
             # check that the first two elements in the tuple are string
+            self.assertIsInstance(i[0:1], str)
 
             # check that the third element in the tuple, i.e. pages is an int
+            self.assertIsInstance(i[-1], int)
 
             # check that the first book in the search has 337 pages
-            pass
+            self.assertEqual(len(i)[0], 337)
+        #pass
 
 
     def test_summarize_best_books(self):
