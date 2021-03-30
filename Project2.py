@@ -133,7 +133,7 @@ def summarize_best_books(filepath):
     categories = soup.find_all('h4')
     for genre in categories: 
         categoryList.append(genre.text.strip())
-    print(categoryList)
+    #print(categoryList)
     
     bookTitleList = [] 
     titles = soup.find_all('div', class_ = 'category__winnerImageContainer')
@@ -141,13 +141,13 @@ def summarize_best_books(filepath):
         for name in title.find_all('img', alt = True):
             item = name['alt']
             bookTitleList.append(item)
-    print(bookTitleList)
+   # print(bookTitleList)
 
     urlList = []
     urls = soup.find_all('div', class_ = 'category clearFix')
     for url in urls: 
         urlList.append(url.find('a')['href'])
-    print(urlList)
+    #print(urlList)
 
     listOfTuples = []
     for book in range(len(urlList)): 
