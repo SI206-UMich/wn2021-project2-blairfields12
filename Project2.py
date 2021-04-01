@@ -197,25 +197,34 @@ def extra_credit(filepath):
     You do not have to write test cases for this function.
     """
     #pass
-    f = open(filepath, 'r')
-    fileData = f.read()
-    f.close()
+    # f = open(filepath, 'r')
+    # fileData = f.read()
+    # f.close()
+
+    with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), filepath), 'r') as f:
+        fileData = f.read()
 
     #regex = r'([A-Z].+ [A-Z].+){1-2}'
     #regex = '(([A-Z].+ [A-Z].+)+)'
     #regex = '([A-Z]{1}.+ [A-Z]{1}.+)+'
     #regex = r'([A-Z][a-z]*)'
     #regex = r'([A-Z]{1}\w+ [A-Z]\w+)'
-    regex = r'([A-Z]{1}\w+ [A-Z]\w+)'
+    # regex = r'([A-Z]{1}\w+ [A-Z]\w+)'
+    regex = r'([A-Z]{1}\w+ [A-Z]\w+ ?([A-Z]\w+)? ?([A-Z]\w+)? ?([A-Z]\w+)?)'
+  
     soup = BeautifulSoup(fileData, 'lxml')
-    descriptions = soup.find('div', class_ = 'readable stacked').find('span', id = 'freeTextContainer4791443123668479528').text
-    
+    descriptions = soup.find('div', class_ = 'readable stacked').find('span', id = 'freeText4791443123668479528').text
+    #print(descriptions)
     # entities = [] 
     # for item in descriptions: 
     entity = re.findall(regex, descriptions)
-    print(len(entity))
-    #print(entity)
-    return entity
+    L = []
+    for item in entity: 
+        L.append(item[0])
+
+    #print(len(L))
+    #print(L)
+    return L
 
         # for i in entity: 
     #         entities.append(entity)
