@@ -210,7 +210,10 @@ def extra_credit(filepath):
     #regex = r'([A-Z][a-z]*)'
     #regex = r'([A-Z]{1}\w+ [A-Z]\w+)'
     # regex = r'([A-Z]{1}\w+ [A-Z]\w+)'
-    regex = r'([A-Z]{1}\w+ [A-Z]\w+ ?([A-Z]\w+)? ?([A-Z]\w+)? ?([A-Z]\w+)?)'
+    #regex = r'([A-Z]{1}\w+ [A-Z]\w+ ?([A-Z]\w+)? ?([A-Z]\w+)? ?([A-Z]\w+)?)'
+    regex = r'\b[A-Z]\w.\w+(?:\s[A-Z]\w+)+'
+    #regex = '([A-Z]\w*. ){2,}'
+    #regex = r'\b([A-Z]{1}\w+ [A-Z]\w+)\b ?([A-Z]\w+)*?'
   
     soup = BeautifulSoup(fileData, 'lxml')
     descriptions = soup.find('div', class_ = 'readable stacked').find('span', id = 'freeText4791443123668479528').text
@@ -218,13 +221,14 @@ def extra_credit(filepath):
     # entities = [] 
     # for item in descriptions: 
     entity = re.findall(regex, descriptions)
-    L = []
-    for item in entity: 
-        L.append(item[0])
+    print(entity)
+    # L = []
+    # for item in entity: 
+    #     L.append(item[0])
 
-    #print(len(L))
+    print(len(entity))
     #print(L)
-    return L
+    return entity
 
         # for i in entity: 
     #         entities.append(entity)
