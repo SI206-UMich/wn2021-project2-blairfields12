@@ -196,7 +196,30 @@ def extra_credit(filepath):
     Please see the instructions document for more information on how to complete this function.
     You do not have to write test cases for this function.
     """
-    pass
+    #pass
+    f = open(filepath, 'r')
+    fileData = f.read()
+    f.close()
+
+    #regex = r'([A-Z].+ [A-Z].+){1-2}'
+    #regex = '(([A-Z].+ [A-Z].+)+)'
+    #regex = '([A-Z]{1}.+ [A-Z]{1}.+)+'
+    #regex = r'([A-Z][a-z]*)'
+    #regex = r'([A-Z]{1}\w+ [A-Z]\w+)'
+    regex = r'([A-Z]{1}\w+ [A-Z]\w+)'
+    soup = BeautifulSoup(fileData, 'lxml')
+    descriptions = soup.find('div', class_ = 'readable stacked').find('span', id = 'freeTextContainer4791443123668479528').text
+    
+    # entities = [] 
+    # for item in descriptions: 
+    entity = re.findall(regex, descriptions)
+    print(len(entity))
+    #print(entity)
+    return entity
+
+        # for i in entity: 
+    #         entities.append(entity)
+    # return entities
 
 class TestCases(unittest.TestCase):
 
